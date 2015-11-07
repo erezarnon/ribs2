@@ -71,6 +71,9 @@ static inline int TEMPLATE(index_container_o2o_exist, T)(IDX_CONTAINER_O2O(T) *i
     return TEMPLATE(index_container_o2o_bsearch, T)(ic->data, ic->header->num_keys, key, &loc);
 }
 
+static inline int TEMPLATE(index_container_o2o_free, T)(IDX_CONTAINER_O2O(T) *ic) {
+    return file_mapper_free(&ic->fm);
+}
 
 /*
  * one to many index
@@ -124,4 +127,8 @@ static inline int TEMPLATE(index_container_o2m_lookup, T)(IDX_CONTAINER_O2M(T) *
 static inline int TEMPLATE(index_container_o2m_exist, T)(IDX_CONTAINER_O2M(T) *ic, T key) {
     uint32_t loc;
     return TEMPLATE(index_container_o2m_bsearch, T)(ic->keys, ic->header->num_keys, key, &loc);
+}
+
+static inline int TEMPLATE(index_container_o2m_free, T)(IDX_CONTAINER_O2M(T) *ic) {
+    return file_mapper_free(&ic->fm);
 }

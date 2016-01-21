@@ -8,4 +8,4 @@ buildall: all $(GEN_OUTPUT)
 include ../../make/ribs.mk
 
 $(GEN_OUTPUT): $(TARGET_FILE)
-	$(shell $(TARGET_FILE) ../../include index_gen.h index_container.h)
+	$(TARGET_FILE) ../../include index_gen.h index_container.h

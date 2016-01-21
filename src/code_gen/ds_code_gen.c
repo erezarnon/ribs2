@@ -1,3 +1,22 @@
+/*
+    This file is part of RIBS2.0 (Robust Infrastructure for Backend Systems).
+    RIBS is an infrastructure for building great SaaS applications (but not
+    limited to).
+
+    Copyright (C) 2016 TrueSkills, Inc.
+
+    RIBS is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, version 2.1 of the License.
+
+    RIBS is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with RIBS.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #include <stdio.h>
 #include <limits.h>
 #include <stdlib.h>
@@ -29,6 +48,13 @@ void write_code(FILE *file, const char *format, ...) {
     if (0 > vfprintf(file, format, ap))
         die("fprintf");
     va_end(ap);
+}
+
+void write_generated_file_comment(FILE *file, const char *src_file_name) {
+    char full_path[PATH_MAX], *ribs_start;
+    ribs_start = realpath(src_file_name, full_path);
+    ribs_start = strstr(full_path, "/ribs2/");
+    write_code(file, "/* THIS IS A GENERATED FILE. SOURCE CAN BE FOUND AT %s */\n\n", ribs_start + sizeof("/ribs2/") - 1);
 }
 
 int main(int argc, char **argv) {

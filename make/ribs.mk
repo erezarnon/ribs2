@@ -37,7 +37,7 @@ ifeq ($(RIBS2_SSL),1)
 CPPFLAGS+=-DRIBS2_SSL
 endif
 
-LDFLAGS+=-L../lib -lstdc++
+LDFLAGS+=-L../lib
 CFLAGS+=$(OPTFLAGS) -ggdb3 -W -Wall -Werror -Wextra
 GCCVER_GTE_4_7=$(shell expr `gcc -dumpversion` \>= 4.7)
 ifeq ($(GCCVER_GTE_4_7),1)
@@ -79,6 +79,8 @@ DEP_DS=$(DS_TARGETS_C:ds_loader_%.c=$(OBJ_DIR)/%_ds.d)
 
 ALL_OUTPUT_FILES+=$(DS_TARGETS) $(TARGET_FILE) $(DS_TARGETS_C:ds_loader_%.c=$(BIN_DIR)/%_ds)
 
+CURRENT_DIR=$(shell pwd)
+
 all: $(TARGET_FILE)
 
 $(ALL_DIRS):
@@ -96,7 +98,7 @@ $(BIN_DIR)/%_ds: $(OBJ_DS)
 
 $(OBJ_DIR)/%.o: %.c $(OBJ_DIR)/%.d
 	@echo "  (C)      $*.c  [ $(CPPFLAGS) -c $(CFLAGS) $*.c -o $(OBJ_DIR)/$*.o ]"
-	@$(CC) $(CPPFLAGS) -c $(CFLAGS) $*.c -o $(OBJ_DIR)/$*.o
+	@$(CC) $(CPPFLAGS) -c $(CFLAGS) $(CURRENT_DIR)/$*.c -o $(OBJ_DIR)/$*.o
 
 $(OBJ_DIR)/%.o: %.S
 	@echo "  (ASM)    $*.S  [ $(CPPFLAGS) -c $(CFLAGS) $*.S -o $(OBJ_DIR)/$*.o ]"
@@ -123,7 +125,7 @@ $(DEP): $(DS_TARGETS)
 
 ../ribified/%: $(RIBIFY_DIR)
 	@echo "  (RIBIFY) $(@:../ribified/%=%) [ $@ $(RIBIFYFLAGS) ]"
-	@objcopy $(shell find $(RIBIFY_LIB_PATH) /usr/lib -name $(@:../ribified/%=%) 2>/dev/null) $@ $(RIBIFYFLAGS)
+	@objcopy $(shell find $(RIBIFY_LIB_PATH) /usr/lib /usr/local/lib -name $(@:../ribified/%=%) | head -1 2>/dev/null) $@ $(RIBIFYFLAGS)
 
 $(BIN_DIR)/$(TARGET): $(OBJ) $(RIBIFY:%=../ribified/%) $(EXTRA_DEPS)
 	@echo "  (LD)     $(@:$(BIN_DIR)/%=%)  [ -o $@ $(OBJ) $(LDFLAGS) ]"
